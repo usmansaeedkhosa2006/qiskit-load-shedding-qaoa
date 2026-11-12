@@ -21,6 +21,9 @@ from loadshed.qubo import (build_qubo, all_costs, qubo_to_ising, decode, bits_fr
                            evaluate_schedule, qubo_value)
 from loadshed.qaoa import QAOASolver
 from loadshed.baselines import brute_force, greedy_rotation, simulated_annealing
+from loadshed import theme as T
+
+T.use_matplotlib_theme()
 
 OUT = "results"
 
@@ -98,14 +101,14 @@ def plot_schedules(inst, panels, path):
                 f = inst.sheddable.index(feeder)
                 grid.append([x[inst.var_index(f, h)] for h in range(inst.n_hours)])
         grid = np.array(grid)
-        cmap = matplotlib.colors.ListedColormap(["#2e7d32", "#e8eef3", "#c62828"])
+        cmap = matplotlib.colors.ListedColormap([T.TEAL, T.SOFT, T.INK])
         ax.imshow(grid, cmap=cmap, vmin=-1, vmax=1)
         ev = evaluate_schedule(inst, x)
         for i in range(grid.shape[0]):
             for j in range(grid.shape[1]):
                 lab = {-1: "never", 0: "on", 1: "OFF"}[grid[i, j]]
                 ax.text(j, i, lab, ha="center", va="center", fontsize=8,
-                        color="white" if grid[i, j] != 0 else "#333")
+                        color="white" if grid[i, j] != 0 else T.TEXT, weight="bold")
         ax.set_xticks(range(inst.n_hours), inst.hour_labels)
         ax.set_yticks(range(len(names)), names if ax is axes[0] else [""] * len(names), fontsize=8)
         sub = (f"shed {ev['shed_mw']} MW vs need {inst.deficits_mw}\n"
@@ -119,16 +122,16 @@ def plot_schedules(inst, panels, path):
 def plot_depth(rows_cvar, rows_exp, n, path):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.6))
     ps = [r["p"] for r in rows_cvar]
-    axes[0].plot(ps, [100 * r["p_opt"] for r in rows_cvar], "o-", label="CVaR-QAOA (α=0.1)")
+    axes[0].plot(ps, [100 * r["p_opt"] for r in rows_cvar], "o-", color=T.INK, lw=2.2, label="CVaR-QAOA (α=0.1)")
     axes[0].plot([r["p"] for r in rows_exp], [100 * r["p_opt"] for r in rows_exp], "s--",
-                 label="standard QAOA (expectation)")
+                 color=T.AMBER, lw=2.2, label="standard QAOA (expectation)")
     axes[0].axhline(100 / 2 ** n, color="grey", ls=":", label=f"random guess (1/{2**n})")
     axes[0].set_yscale("log")
     axes[0].set_xlabel("QAOA depth p"); axes[0].set_ylabel("P(optimal schedule) %")
     axes[0].legend(fontsize=8); axes[0].set_title("Probability of measuring the optimum", fontsize=10)
-    axes[1].plot(ps, [100 * r["p_feasible"] for r in rows_cvar], "o-", label="CVaR-QAOA (α=0.1)")
+    axes[1].plot(ps, [100 * r["p_feasible"] for r in rows_cvar], "o-", color=T.INK, lw=2.2, label="CVaR-QAOA (α=0.1)")
     axes[1].plot([r["p"] for r in rows_exp], [100 * r["p_feasible"] for r in rows_exp], "s--",
-                 label="standard QAOA")
+                 color=T.AMBER, lw=2.2, label="standard QAOA")
     axes[1].axhline(100 * 2 / 2 ** n, color="grey", ls=":", label="random guess")
     axes[1].set_yscale("log")
     axes[1].set_xlabel("QAOA depth p"); axes[1].set_ylabel("P(valid schedule) %")
@@ -144,13 +147,13 @@ def plot_histogram(inst, row, costs, k_opt, feas, path, top=15):
         sched = decode(inst, bits_from_index(k, inst.n_qubits))
         labels.append(" | ".join("+".join(v) or "-" for v in sched.values()))
         vals.append(c)
-        colors.append("#c62828" if k == k_opt else ("#ef9a9a" if feas[k] else "#90a4ae"))
+        colors.append(T.AMBER if k == k_opt else (T.INK2 if feas[k] else T.LINE))
     fig, ax = plt.subplots(figsize=(10, 4.2))
     ax.barh(range(len(vals))[::-1], vals, color=colors)
     ax.set_yticks(range(len(vals))[::-1], labels, fontsize=7)
     ax.set_xlabel(f"counts out of {row['shots']} shots")
     ax.set_title(f"Top {top} measured schedules at p={row['p']}  "
-                 "(dark red = optimal, pink = valid, grey = violates a rule)\n"
+                 "(amber = optimal, indigo = valid, grey = breaks a rule)\n"
                  "label = feeders OFF at 18:00 | 19:00 | 20:00", fontsize=9)
     fig.tight_layout(); fig.savefig(path, dpi=180); plt.close(fig)
 

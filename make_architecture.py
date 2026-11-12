@@ -4,24 +4,27 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
+from loadshed import theme as T
+
+T.use_matplotlib_theme()
 
 os.makedirs("results", exist_ok=True)
 fig, ax = plt.subplots(figsize=(12, 6.4))
 ax.set_xlim(0, 12); ax.set_ylim(0, 6.4); ax.axis("off")
 
-CLASSICAL, QUANTUM, CHECK = "#e3f2fd", "#fce4ec", "#e8f5e9"
+CLASSICAL, QUANTUM, CHECK = T.SOFT, "#FEF3C7", "#CCFBF1"
 
 
 def box(x, y, w, h, title, body, color):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.04,rounding_size=0.12",
-                                fc=color, ec="#37474f", lw=1.2))
-    ax.text(x + w / 2, y + h - 0.22, title, ha="center", va="top", fontsize=9.5, weight="bold")
+                                fc=color, ec=T.INK, lw=1.4))
+    ax.text(x + w / 2, y + h - 0.22, title, ha="center", va="top", fontsize=10, weight="bold", color=T.INK)
     ax.text(x + w / 2, y + h - 0.55, body, ha="center", va="top", fontsize=7.8, linespacing=1.35)
 
 
 def arrow(x1, y1, x2, y2, label="", curve=0.0):
     ax.annotate("", xy=(x2, y2), xytext=(x1, y1),
-                arrowprops=dict(arrowstyle="-|>", lw=1.4, color="#37474f",
+                arrowprops=dict(arrowstyle="-|>", lw=1.4, color=T.INK,
                                 connectionstyle=f"arc3,rad={curve}"))
     if label:
         ax.text((x1 + x2) / 2, (y1 + y2) / 2 + 0.12, label, ha="center", fontsize=7.5, style="italic")
@@ -53,10 +56,10 @@ arrow(9.3, 2.5, 9.8, 2.5, "trained")
 arrow(10.8, 1.5, 9.6, 0.75)
 arrow(2.6, 0.65, 2.2, 0.9)
 
-ax.text(4.1, 3.85, "hybrid quantum-classical loop", fontsize=8, color="#ad1457", ha="center")
-ax.legend(handles=[matplotlib.patches.Patch(fc=CLASSICAL, ec="#37474f", label="classical"),
-                   matplotlib.patches.Patch(fc=QUANTUM, ec="#37474f", label="quantum (simulated)"),
-                   matplotlib.patches.Patch(fc=CHECK, ec="#37474f", label="validation / output")],
+ax.text(4.1, 3.85, "hybrid quantum-classical loop", fontsize=8, color=T.AMBER, weight="bold", ha="center")
+ax.legend(handles=[matplotlib.patches.Patch(fc=CLASSICAL, ec=T.INK, label="classical"),
+                   matplotlib.patches.Patch(fc=QUANTUM, ec=T.INK, label="quantum (simulated)"),
+                   matplotlib.patches.Patch(fc=CHECK, ec=T.INK, label="validation / output")],
           loc="upper center", bbox_to_anchor=(0.5, 1.02), ncol=3, fontsize=8, frameon=False)
 fig.tight_layout()
 fig.savefig("results/fig_architecture.png", dpi=180)

@@ -42,7 +42,17 @@ Outputs go to `results/`:
 - `fig_histogram.png` shows the most-measured schedules.
 - `fig_architecture.png` is the architecture diagram.
 
-To rebuild the report run `pip install python-docx`, then `python make_report.py`.
+### The report
+
+`Report.docx` is the submitted report: a 16-page, A4 landscape magazine layout. `Report.pdf` is the same document exported from Word, in case the .docx renders differently on your machine. The headings use the Impact font.
+
+To rebuild it:
+
+```bash
+pip install python-docx
+python make_figures.py   # themed figures, re-sampled histogram, cover art and icons in report_assets/
+python make_report.py    # writes Report.docx from results/results.json
+```
 
 ## How it works
 

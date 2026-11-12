@@ -18,8 +18,8 @@ Test instance: 4 sheddable feeders × 3 evening hours = **12 qubits** (4096 sche
 Requires Python 3.10+ (tested on 3.14, Windows 11).
 
 ```bash
-git clone <this-repo-url>
-cd <repo-folder>
+git clone https://github.com/usmansaeedkhosa2006/qiskit-load-shedding-qaoa.git
+cd qiskit-load-shedding-qaoa
 python -m venv .venv
 # Windows:   .venv\Scripts\activate
 # macOS/Linux: source .venv/bin/activate

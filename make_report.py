@@ -117,7 +117,7 @@ r.font.size = Pt(20)
 r.font.color.rgb = RGBColor(0x1F, 0x3A, 0x5F)
 P("Qiskit Fall Fest 2026 Hackathon  ·  Domain: Energy & Smart Infrastructure",
   align=WD_ALIGN_PARAGRAPH.CENTER, size=11)
-P("Team: [team name / members]   ·   Code: [GitHub link]   ·   Video: [Drive link]",
+P("Team: [team name / members]   ·   Code: github.com/usmansaeedkhosa2006/qiskit-load-shedding-qaoa   ·   Video: [Drive link]",
   align=WD_ALIGN_PARAGRAPH.CENTER, size=10, italic=True)
 
 # ------------------------------------------------------------------ 1
